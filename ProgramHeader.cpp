@@ -18,7 +18,11 @@ void ProgramHeader::loadHeader(char *ptr) {
         current_offset += sizeof(this->p_filesz) / 2;
         memcpy(&this->p_memsz, &ptr[current_offset], sizeof(this->p_memsz) / 2);
         current_offset += sizeof(this->p_memsz) / 2;
+        memcpy(&this->p_flags, &ptr[current_offset], sizeof(this->p_flags));
+        current_offset += sizeof(this->p_flags);
     } else {
+        memcpy(&this->p_flags, &ptr[current_offset], sizeof(this->p_flags));
+        current_offset += sizeof(this->p_flags);
         memcpy(&this->p_offset, &ptr[current_offset], sizeof(this->p_offset));
         current_offset += sizeof(this->p_offset);
         memcpy(&this->p_vaddr, &ptr[current_offset], sizeof(this->p_vaddr));
@@ -30,7 +34,9 @@ void ProgramHeader::loadHeader(char *ptr) {
         memcpy(&this->p_memsz, &ptr[current_offset], sizeof(this->p_memsz));
         current_offset += sizeof(this->p_memsz);
     }
-    memcpy(&this->p_flags, &ptr[current_offset], sizeof(this->p_flags));
-    current_offset += sizeof(this->p_flags);
-    memcpy(&this->p_align, &ptr[current_offset], sizeof(this->p_align));
+    if(this->is32Bit()) {
+        memcpy(&this->p_align, &ptr[current_offset], sizeof(this->p_align) / 2);
+    } else {
+        memcpy(&this->p_align, &ptr[current_offset], sizeof(this->p_align));
+    }
 }

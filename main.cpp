@@ -2,14 +2,21 @@
 #include "ELF.h"
 #include "ElfParserUtil.h"
 #include "Disassembler.h"
-int main() {
-    std::string path = "/home/yairko/Desktop/University/cs/OperatingSystems/ex4/a.out";
-    ElfHeader* e = new ElfHeader(path);
-    auto* elf = new ELF(e);
-    elf->e_header->printHeaderInfo();
-    std::cout << elf->securityCheck() << std::endl;
-    for(auto & iter : elf->infoPLTFunctions()) {
-        std::cout << iter << std::endl;
+#include "ArgProcessor.h"
+int main(int argc, char* argv[]) {
+    if (argc <= 1) {
+       std::cout << "Usage: ./koskassembler [path] [flags]" << std::endl;
+       return 0;
     }
+    std::string path = argv[1];
+    std::vector<std::string> args;
+    int i;
+    for (i = 2; i < argc; ++i) {
+        args.emplace_back(argv[i]);
+    }
+    auto* e = new ElfHeader(path);
+    auto* elf = new ELF(e);
+    ArgProcessor* ap = new ArgProcessor(args, elf);
+    ap->executeArgs();
     return 0;
 }

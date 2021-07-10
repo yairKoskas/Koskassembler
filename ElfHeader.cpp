@@ -4,6 +4,7 @@
 
 #include "ElfHeader.h"
 #include <iostream>
+#include <iomanip>
 #include <cstdio>
 #include <cstring>
 #include "ElfParserUtil.h"
@@ -143,24 +144,24 @@ void ElfHeader::loadHeader(std::string path) {
 }
 void ElfHeader::printHeaderInfo() {
     std::cout << std::endl << "---------------------ELF Header Info----------------------" << std::endl;
-    std::cout << "ELF Magic\t\t\t\t\t7f 46 4c 45" << std::endl;
-    std::cout << "Architecture\t\t\t\t64 Bit" << std::endl;
-    std::cout << "Endianness\t\t\t\t\t" << convertEndianessToString(this->e_ident[5]) << std::endl;
-    std::cout << "Version\t\t\t\t\t\t" << (char)(this->e_ident[6]+'0') << std::endl;
-    std::cout << "OS/ABI\t\t\t\t\t\t" << convertABIToString(this->e_ident[7]) << std::endl;
-    std::cout << "File Type\t\t\t\t\t" << convertTypeToString(this->e_type) << std::endl;
-    std::cout << "Machine\t\t\t\t\t\t" << convertMachineToString(this->e_machine) << std::endl;
-    std::cout << "Version\t\t\t\t\t\t" << intToHex(this->e_version) << std::endl;
-    std::cout << "Entry Point\t\t\t\t\t" << intToHex(this->e_entry) << std::endl;
-    std::cout << "Start Of Program Headers\t" << intToHex(this->e_phoff) << std::endl;
-    std::cout << "Start Of Section Headers\t" << intToHex(this->e_shoff) << std::endl;
-    std::cout << "Flags\t\t\t\t\t\t" << intToHex(this->e_flags) << std::endl;
-    std::cout << "Size Of This Header\t\t\t" << intToHex(this->e_ehsize) << std::endl;
-    std::cout << "Size Of Program Headers\t\t" << intToHex(this->e_phentsize) << std::endl;
-    std::cout << "Number Of Program Headers\t" << intToHex(this->e_phnum) << std::endl;
-    std::cout << "Size Of Section Headers\t\t" << intToHex(this->e_shentsize) << std::endl;
-    std::cout << "Number Of Section Headers\t" << intToHex(this->e_shnum) << std::endl;
-    std::cout << "String Table Index\t\t\t" << intToHex(this->e_shstrndx) << std::endl;
+    std::cout <<  "ELF Magic                    7f 46 4c 45" << std::endl;
+    std::cout <<  "Architecture                 64 Bit" << std::endl;
+    std::cout <<  "Endianness                   " << convertEndianessToString(this->e_ident[5]) << std::endl;
+    std::cout <<  "Version                      " << (char)(this->e_ident[6]+'0') << std::endl;
+    std::cout <<  "OS/ABI                       " << convertABIToString(this->e_ident[7]) << std::endl;
+    std::cout <<  "File Type                    " << convertTypeToString(this->e_type) << std::endl;
+    std::cout <<  "Machine                      " << convertMachineToString(this->e_machine) << std::endl;
+    std::cout <<  "Version                      " << intToHex(this->e_version) << std::endl;
+    std::cout <<  "Entry Point                  " << intToHex(this->e_entry) << std::endl;
+    std::cout <<  "Start Of Program Headers     " << intToHex(this->e_phoff) << std::endl;
+    std::cout <<  "Start Of Section Headers     " << intToHex(this->e_shoff) << std::endl;
+    std::cout <<  "Flags                        " << intToHex(this->e_flags) << std::endl;
+    std::cout <<  "Size Of This Header          " << intToHex(this->e_ehsize) << std::endl;
+    std::cout <<  "Size Of Program Headers      " << intToHex(this->e_phentsize) << std::endl;
+    std::cout <<  "Number Of Program Headers    " << intToHex(this->e_phnum) << std::endl;
+    std::cout <<  "Size Of Section Headers      " << intToHex(this->e_shentsize) << std::endl;
+    std::cout <<  "Number Of Section Headers    " << intToHex(this->e_shnum) << std::endl;
+    std::cout <<  "String Table Index           " << intToHex(this->e_shstrndx) << std::endl;
     std::cout << "---------------------ELF Header Info----------------------" << std::endl << std::endl;
 }
 ElfHeader::ElfHeader(std::string path) {

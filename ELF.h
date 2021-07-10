@@ -7,6 +7,7 @@
 #include "ElfHeader.h"
 #include "ProgramHeader.h"
 #include "SectionHeader.h"
+#include "DynamicTag.h"
 #include <vector>
 #include <map>
 class ELF {
@@ -16,6 +17,7 @@ public:
     ElfHeader* e_header;
     std::vector<SectionHeader*> s_headers;
     std::vector<ProgramHeader*> p_headers;
+    std::vector<DynamicTag*> dynamic_tags;
     std::map<uint32_t,std::string> string_table;
     std::map<uint32_t,std::string> symbol_string_table;
     SectionHeader* getSectionHeader(std::string section_name);

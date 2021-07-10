@@ -12,6 +12,9 @@
 #define PARTIAL_RELRO 1
 #define FULL_RELRO 2
 #define PT_GNU_STACK 0x6474e551
+#define PT_GNU_RELRO 0x6474e552
+#define DT_FULL_RELRO 0x8
+#define DT_PIE 0x8000001
 class ElfNotInitializedException : public std::runtime_error {
     char const* what() const noexcept override {
         return std::runtime_error::what();
@@ -48,7 +51,7 @@ ELF::ELF(std::string name, std::string path) {
     this->e_header = new ElfHeader(path);
     uint32_t offset_of_section_table = this->e_header->e_shoff;
     FILE* f = fopen(path.c_str(),"r");
-    fseek(f,(int)offset_of_section_table,SEEK_SET);
+    fseek(f,(long)offset_of_section_table,SEEK_SET);
     // this->s_headers = new std::vector<SectionHeaderx86>[this->e_header->e_shnum];
     int i;
     for (i = 0; i < this->e_header->e_shnum; ++i) {
@@ -62,7 +65,7 @@ ELF::ELF(std::string name, std::string path) {
         this->s_headers[i]->loadHeader(buf);
     }
     uint32_t offset_of_program_table = this->e_header->e_phoff;
-    fseek(f, offset_of_program_table,SEEK_SET);
+    fseek(f, (long)offset_of_program_table, SEEK_SET);
     for(i = 0; i < this->e_header->e_phnum; ++i) {
         if(this->is32Bit()) {
             this->p_headers.push_back(new ProgramHeader(BIT32));
@@ -74,7 +77,7 @@ ELF::ELF(std::string name, std::string path) {
         this->p_headers[i]->loadHeader(buf);
     }
     SectionHeader* section_string_table = this->s_headers[this->e_header->e_shstrndx];
-    fseek(f, section_string_table->sh_offset, SEEK_SET);
+    fseek(f, (long)section_string_table->sh_offset, SEEK_SET);
     char buf[section_string_table->sh_size];
     fread(buf,sizeof(char),sizeof(buf),f);
     this->string_table = loadStringTable(buf, (int)section_string_table->sh_size);
@@ -82,10 +85,28 @@ ELF::ELF(std::string name, std::string path) {
         this->s_headers[i]->name = this->string_table[this->s_headers[i]->sh_name];
     }
     SectionHeader* symbol_string_table_section = this->getSectionHeader(".strtab");
-    fseek(f, symbol_string_table_section->sh_offset, SEEK_SET);
+    fseek(f, (long)symbol_string_table_section->sh_offset, SEEK_SET);
     char buf2[symbol_string_table_section->sh_size];
     fread(buf2,sizeof(char),sizeof(buf2),f);
     this->symbol_string_table = loadStringTable(buf2, symbol_string_table_section->sh_size);
+    SectionHeader* dynamic_section = this->getSectionHeader(".dynamic");
+    int size;
+    if (this->is32Bit()) {
+       size = 8;
+    } else {
+        size = 16;
+    }
+    fseek(f,(long)dynamic_section->sh_offset, SEEK_SET);
+    for (i = 0; i < (int)dynamic_section->sh_size / size; ++i) {
+        if (this->is32Bit()) {
+            this->dynamic_tags.push_back(new DynamicTag(BIT32));
+        } else {
+            this->dynamic_tags.push_back(new DynamicTag(BIT64));
+        }
+        char buf3[dynamic_section->sh_entsize];
+        fread(buf3,sizeof(char),sizeof(buf3),f);
+        this->dynamic_tags[i]->loadTag(buf3);
+    }
     fclose(f);
 }
 ELF::ELF(ElfHeader* e) {
@@ -108,7 +129,7 @@ ELF::ELF(ElfHeader* e) {
         this->s_headers[i]->loadHeader(buf);
     }
     uint64_t offset_of_program_table = this->e_header->e_phoff;
-    fseek(f,offset_of_program_table,SEEK_SET);
+    fseek(f,(long)offset_of_program_table,SEEK_SET);
     for(i = 0; i < this->e_header->e_phnum; ++i) {
         if(this->is32Bit()) {
             this->p_headers.push_back(new ProgramHeader(BIT32));
@@ -120,7 +141,7 @@ ELF::ELF(ElfHeader* e) {
         this->p_headers[i]->loadHeader(buf);
     }
     SectionHeader* section_string_table = this->s_headers[this->e_header->e_shstrndx];
-    fseek(f, section_string_table->sh_offset, SEEK_SET);
+    fseek(f, (long)section_string_table->sh_offset, SEEK_SET);
     char buf[section_string_table->sh_size];
     fread(buf,sizeof(char),sizeof(buf),f);
     this->string_table = loadStringTable(buf, (int)section_string_table->sh_size);
@@ -132,6 +153,24 @@ ELF::ELF(ElfHeader* e) {
     char buf2[symbol_string_table_section->sh_size];
     fread(buf2,sizeof(char),sizeof(buf2),f);
     this->symbol_string_table = loadStringTable(buf2, symbol_string_table_section->sh_size);
+    SectionHeader* dynamic_section = this->getSectionHeader(".dynamic");
+    int size;
+    if (this->is32Bit()) {
+        size = 8;
+    } else {
+        size = 16;
+    }
+    fseek(f,(long)dynamic_section->sh_offset, SEEK_SET);
+    for (i = 0; i < (int)dynamic_section->sh_size / size; ++i) {
+        if (this->is32Bit()) {
+            this->dynamic_tags.push_back(new DynamicTag(BIT32));
+        } else {
+            this->dynamic_tags.push_back(new DynamicTag(BIT64));
+        }
+        char buf3[dynamic_section->sh_entsize];
+        fread(buf3,sizeof(char),sizeof(buf3),f);
+        this->dynamic_tags[i]->loadTag(buf3);
+    }
     fclose(f);
 }
 
@@ -151,6 +190,27 @@ std::string ELF::securityCheck() {
             nx = true;
             break;
         }
+    }
+    int flag_debug = 0;
+    int flag_now_pie = 0;
+    for (auto & iter : this->p_headers) {
+        if (iter->p_type == PT_GNU_RELRO) {
+            relro = PARTIAL_RELRO;
+            for (auto & dyn_iter : this->dynamic_tags) {
+                if (dyn_iter->d_tag == DT_FLAGS && dyn_iter->d_val == DT_FULL_RELRO) {
+                    relro = FULL_RELRO;
+                }
+                if (dyn_iter->d_tag == DT_DEBUG) {
+                    flag_debug = 1;
+                }
+                if(dyn_iter->d_tag == DT_FLAGS_1 && dyn_iter->d_val == DT_PIE) {
+                    flag_now_pie = 1;
+                }
+            }
+        }
+    }
+    if(flag_debug && flag_now_pie) {
+        pie = true;
     }
     std::string s;
     if (canary) {
