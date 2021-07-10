@@ -38,6 +38,6 @@ std::string convertMachineToString(uint16_t e_machine) {
     if (e_machine == EM_386) {
         return "Intel 80386";
     } else {
-        return "AMD x86_64";
+        return "AMD x86-64";
     }
 }

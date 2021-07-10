@@ -118,6 +118,9 @@ ELF::ELF(std::string path) {
     fclose(f);
 }
 ELF::ELF(ElfHeader* e) {
+    if (e == nullptr || e->is_init()) {
+        throw ElfNotInitializedException();
+    }
     this->m_path = e->m_path;
     this->m_name = this->m_path.substr(this->m_path.find_last_of('/')+1,this->m_path.length() - 1);;
     this->e_header = e;

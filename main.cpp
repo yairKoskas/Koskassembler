@@ -5,7 +5,7 @@
 #include "ArgProcessor.h"
 int main(int argc, char* argv[]) {
     if (argc <= 2) {
-       std::cout << "Usage: ./koskassembler [path] [flags]" << std::endl;
+       std::cout << "Usage: ./koskassembler [path-to-elf] [flags]" << std::endl;
        std::cout << "For more information, try ./koskassembler --help" << std::endl;
        return 0;
     }
