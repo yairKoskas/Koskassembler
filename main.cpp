@@ -14,9 +14,8 @@ int main(int argc, char* argv[]) {
     for (i = 2; i < argc; ++i) {
         args.emplace_back(argv[i]);
     }
-    auto* e = new ElfHeader(path);
-    auto* elf = new ELF(e);
-    ArgProcessor* ap = new ArgProcessor(args, elf);
+    auto* elf = new ELF(path);
+    auto* ap = new ArgProcessor(args, elf);
     ap->executeArgs();
     return 0;
 }

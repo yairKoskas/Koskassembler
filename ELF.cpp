@@ -53,9 +53,9 @@ std::map<uint32_t, std::string> loadStringTable(char* buf, int len) {
     } while (current_offset < len);
     return strings;
 }
-ELF::ELF(std::string name, std::string path) {
-    this->m_name = name;
+ELF::ELF(std::string path) {
     this->m_path = path;
+    this->m_name = this->m_path.substr(this->m_path.find_last_of('/')+1,this->m_path.length() - 1);;
     this->e_header = new ElfHeader(path);
     uint32_t offset_of_section_table = this->e_header->e_shoff;
     FILE* f = fopen(path.c_str(),"r");
@@ -119,7 +119,7 @@ ELF::ELF(std::string name, std::string path) {
 }
 ELF::ELF(ElfHeader* e) {
     this->m_path = e->m_path;
-    this->m_name = this->m_path.substr(this->m_path.find_last_of("/")+1,this->m_path.length() - 1);;
+    this->m_name = this->m_path.substr(this->m_path.find_last_of('/')+1,this->m_path.length() - 1);;
     this->e_header = e;
     uint32_t offset_of_section_table = this->e_header->e_shoff;
     FILE* f = fopen(this->m_path.c_str(),"r");
