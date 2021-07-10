@@ -73,4 +73,16 @@ public:
         this->m_elf = elf;
     }
 };
+class Help : public Command {
+public:
+    void execute() override {
+        std::cout << "Display ELF file information:" << std::endl;
+        std::cout << "Flag Options Are: " << std::endl;
+        std::cout << "  --info-header:                       Display ELF Header Information" << std::endl;
+        std::cout << "  --info-shstrtab/--info-string-table: Display String Table Entries" << std::endl;
+        std::cout << "  --info-symtab/--info-symbol-table    Display Symbol Table Entries" << std::endl;
+        std::cout << "  --info-plt                           Display Dynamically-Resolved Functions" << std::endl;
+        std::cout << "  --checksec                           Display Security Attributes Information" << std::endl;
+    }
+};
 #endif //KOSKASSEMBLER_COMMAND_H

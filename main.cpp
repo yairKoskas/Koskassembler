@@ -4,8 +4,9 @@
 #include "Disassembler.h"
 #include "ArgProcessor.h"
 int main(int argc, char* argv[]) {
-    if (argc <= 1) {
+    if (argc <= 2) {
        std::cout << "Usage: ./koskassembler [path] [flags]" << std::endl;
+       std::cout << "For more information, try ./koskassembler --help" << std::endl;
        return 0;
     }
     std::string path = argv[1];
