@@ -46,5 +46,31 @@ public:
         this->m_elf->e_header->printHeaderInfo();
     }
 };
+class StringTableInfo : public ElfCommand {
+public:
+    StringTableInfo(ELF* elf) {
+        this->m_elf = elf;
+    }
+    void execute() override {
+        for (auto & iter : this->m_elf->string_table) {
+            if(!iter.second.empty())
+                std::cout << iter.second << std::endl;
+        }
+        std::cout << std::endl;
+    }
+};
+class SymbolTableInfo : public ElfCommand {
+    void execute() override {
+        for (auto & iter : this->m_elf->symbol_string_table) {
+            if(!iter.second.empty())
+                std::cout << iter.second << std::endl;
+        }
+        std::cout << std::endl;
+    }
 
+public:
+    SymbolTableInfo(ELF* elf) {
+        this->m_elf = elf;
+    }
+};
 #endif //KOSKASSEMBLER_COMMAND_H
