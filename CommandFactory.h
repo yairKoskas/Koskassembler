@@ -14,6 +14,7 @@ private:
 public:
     CommandFactory(ELF* elf);
     Command* getCommand(const std::string& name);
+    ~CommandFactory();
 };
 
 

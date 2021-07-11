@@ -11,10 +11,10 @@
 class ArgProcessor {
     std::vector<std::string> m_args;
     CommandFactory* m_cf;
-    ELF* m_elf;
 public:
     ArgProcessor(std::vector<std::string> args, ELF* elf);
     void executeArgs();
+    ~ArgProcessor();
 };
 
 

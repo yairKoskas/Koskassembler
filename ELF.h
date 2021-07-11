@@ -23,8 +23,10 @@ public:
     SectionHeader* getSectionHeader(std::string section_name);
     explicit ELF(const std::string& path);
     explicit ELF(ElfHeader* e);
+    ELF(const ELF& e) : ELF(e.m_path) {};
     std::string securityCheck();
     std::vector<std::string> infoPLTFunctions();
     bool is32Bit();
+    ~ELF();
 };
 #endif //KOSKASSEMBLER_ELF_H

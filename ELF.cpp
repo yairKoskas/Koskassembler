@@ -257,3 +257,16 @@ std::vector<std::string> ELF::infoPLTFunctions() {
     }
     return plt_functions;
 }
+ELF::~ELF() {
+    delete this->e_header;
+    int i;
+    for (i = 0; i < this->s_headers.size(); ++i) {
+        delete this->s_headers[i];
+    }
+    for (i = 0; i < this->p_headers.size(); ++i) {
+        delete this->p_headers[i];
+    }
+    for (i = 0; i < this->dynamic_tags.size(); ++i) {
+        delete this->dynamic_tags[i];
+    }
+}

@@ -20,3 +20,8 @@ Command * CommandFactory::getCommand(const std::string& name) {
     }
     return this->m_mapping[name];
 }
+CommandFactory::~CommandFactory() {
+    for (auto & iter : this->m_mapping) {
+        delete iter.second;
+    }
+}

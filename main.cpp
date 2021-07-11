@@ -18,5 +18,7 @@ int main(int argc, char* argv[]) {
     auto* elf = new ELF(path);
     auto* ap = new ArgProcessor(args, elf);
     ap->executeArgs();
+    delete elf;
+    delete ap;
     return 0;
 }

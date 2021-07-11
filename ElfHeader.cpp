@@ -141,6 +141,7 @@ void ElfHeader::loadHeader(const std::string& path) {
     memcpy(&this->e_shnum, &buf[current_offset], sizeof(this->e_shnum));
     current_offset += sizeof(this->e_shnum);
     memcpy(&this->e_shstrndx, &buf[current_offset], sizeof(this->e_shstrndx));
+    delete[] buf;
 }
 void ElfHeader::printHeaderInfo() {
     std::cout << std::endl << "---------------------ELF Header Info----------------------" << std::endl;
