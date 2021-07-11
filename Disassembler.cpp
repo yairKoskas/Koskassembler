@@ -5,14 +5,33 @@
 #include "Disassembler.h"
 Disassembler::Disassembler(ELF *elf) {
     this->m_elf = elf;
+    this->byteToInstruction.insert({0x40,"inc eax\n"});
+    this->byteToInstruction.insert({0x41,"inc ecx\n"});
+    this->byteToInstruction.insert({0x42,"inc edx\n"});
+    this->byteToInstruction.insert({0x43,"inc ebx\n"});
+    this->byteToInstruction.insert({0x44,"inc esp\n"});
+    this->byteToInstruction.insert({0x45,"inc ebp\n"});
+    this->byteToInstruction.insert({0x46,"inc esi\n"});
+    this->byteToInstruction.insert({0x47,"inc edi\n"});
+    this->byteToInstruction.insert({0x48,"dec eax\n"});
+    this->byteToInstruction.insert({0x49,"dec ecx\n"});
+    this->byteToInstruction.insert({0x4a,"dec edx\n"});
+    this->byteToInstruction.insert({0x4b,"dec ebx\n"});
+    this->byteToInstruction.insert({0x4c,"dec esp\n"});
+    this->byteToInstruction.insert({0x4d,"dec ebp\n"});
+    this->byteToInstruction.insert({0x4e,"dec esi\n"});
+    this->byteToInstruction.insert({0x4f,"dec edi\n"});
 }
-std::string decodeOpcodex64(char* buf) {
+std::string Disassembler::decodeOpcodex64(char* buf) {
+    std::string s = this->byteToInstruction[buf[0]];
+    if (s[s.length()-1] == '\n') {
+       return s;
+    }
+}
+std::string Disassembler::decodeOpcodex86(char* buf) {
     return "";
 }
-std::string decodeOpcodex86(char* buf) {
-    return "";
-}
-std::string disassemblex86(char* buf, int size) {
+std::string Disassembler::disassemblex86(char* buf, int size) {
     int i;
     std::string s;
     for (i = 0; i < size; ++i) {
@@ -21,7 +40,7 @@ std::string disassemblex86(char* buf, int size) {
     }
     return s;
 }
-std::string disassemblex64(char* buf, int size) {
+std::string Disassembler::disassemblex64(char* buf, int size) {
     int i;
     std::string s;
     for (i = 0; i < size; ++i) {
@@ -37,7 +56,7 @@ std::string Disassembler::disassembleSection(const std::string& section_name) {
     char buf[sec->sh_size];
     fread(buf,sizeof(char),sizeof(buf),f);
     if(this->m_elf->is32Bit()) {
-        return disassemblex86(buf, sec->sh_size);
+        return this->disassemblex86(buf, sec->sh_size);
     }
-    return disassemblex64(buf, sec->sh_size);
+    return this->disassemblex64(buf, sec->sh_size);
 }
