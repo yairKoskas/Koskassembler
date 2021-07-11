@@ -111,7 +111,7 @@ ELF::ELF(const std::string& path) {
         } else {
             this->dynamic_tags.push_back(new DynamicTag(BIT64));
         }
-        char buf3[dynamic_section->sh_entsize];
+        char buf3[size];
         fread(buf3,sizeof(char),sizeof(buf3),f);
         this->dynamic_tags[i]->loadTag(buf3);
     }
