@@ -10,9 +10,8 @@ class Disassembler {
     ELF* m_elf;
 
 public:
-    Disassembler(ELF* elf);
-
-    std::string disassembleSection(std::string section_name);
+    explicit Disassembler(ELF* elf);
+    std::string disassembleSection(const std::string& section_name);
 };
 
 #endif //KOSKASSEMBLER_DISASSEMBLER_H

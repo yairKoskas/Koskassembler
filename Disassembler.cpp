@@ -12,22 +12,14 @@ std::string disassemblex86(char* buf) {
 std::string disassemblex64(char* buf) {
     return "xor rsi,rsi";
 }
-std::string Disassembler::disassembleSection(std::string section_name) {
-//    if (this->m_elf->is32Bit()) {
-//        SectionHeaderx86* sec = this->m_elf->getSectionHeader(section_name).first;
-//        FILE* f = fopen(this->m_elf->m_path.c_str(), "r");
-//        fseek(f,sec->sh_offset,SEEK_SET);
-//        char buf[sec->sh_size];
-//        fread(buf,sizeof(char),sizeof(buf),f);
-//        fclose(f);
-//        return "Disassembly of section <"+section_name+">\n"+disassemblex86(buf);
-//    } else {
-//        FILE* f = fopen(this->m_elf->m_path.c_str(), "r");
-//        SectionHeaderx64* sec = this->m_elf->getSectionHeader(section_name).second;
-//        fseek(f,sec->sh_offset,SEEK_SET);
-//        char buf[sec->sh_size];
-//        fread(buf,sizeof(char),sizeof(buf),f);
-//        fclose(f);
-//        return "Disassembly of section <"+section_name+">\n"+disassemblex64(buf);
-//    }
+std::string Disassembler::disassembleSection(const std::string& section_name) {
+    FILE* f = fopen(this->m_elf->m_path.c_str(), "r");
+    SectionHeader* sec = this->m_elf->getSectionHeader(section_name);
+    fseek(f,(long)sec->sh_offset,SEEK_SET);
+    char buf[sec->sh_size];
+    fread(buf,sizeof(char),sizeof(buf),f);
+    if(this->m_elf->is32Bit()) {
+        return disassemblex86(buf);
+    }
+    return disassemblex64(buf);
 }

@@ -3,6 +3,7 @@
 //
 
 #include "Command.h"
+#include "Disassembler.h"
 void Help::execute()  {
     std::cout << "Display ELF file information:" << std::endl;
     std::cout << "Flag Options Are: " << std::endl;
@@ -11,6 +12,7 @@ void Help::execute()  {
     std::cout << "  --info-symtab/--info-symbol-table    Display Symbol Table Entries" << std::endl;
     std::cout << "  --info-plt                           Display Dynamically-Resolved Functions" << std::endl;
     std::cout << "  --checksec                           Display Security Attributes Information" << std::endl;
+    std::cout << "  --disassemble                        Display Disassembly Of Text Section" << std::endl;
 }
 void SymbolTableInfo::execute() {
     for (auto & iter : this->m_elf->symbol_string_table) {
@@ -35,4 +37,9 @@ void InfoPlt::execute() {
 }
 void Checksec::execute() {
     std::cout << this->m_elf->securityCheck() << std::endl;
+}
+void Disassemble::execute() {
+    auto* d = new Disassembler(this->m_elf);
+    std::cout << d->disassembleSection(".text") << std::endl;
+    delete d;
 }

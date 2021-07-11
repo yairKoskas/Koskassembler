@@ -49,6 +49,12 @@ class SymbolTableInfo : public ElfCommand {
 public:
     explicit SymbolTableInfo(ELF *elf) : ElfCommand(elf) {}
 };
+class Disassemble : public ElfCommand {
+    void execute() override;
+
+public:
+    explicit Disassemble(ELF *elf) : ElfCommand(elf) {}
+};
 class Help : public Command {
     void execute() override;
 

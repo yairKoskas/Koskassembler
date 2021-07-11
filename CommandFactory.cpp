@@ -12,6 +12,7 @@ CommandFactory::CommandFactory(ELF* elf) {
     this->m_mapping.insert({"--info-string-table", new StringTableInfo(m_elf)});
     this->m_mapping.insert({"--info-symtab", new SymbolTableInfo(m_elf)});
     this->m_mapping.insert({"--info-symbol-table", new SymbolTableInfo(m_elf)});
+    this->m_mapping.insert({"--disassemble", new Disassemble(m_elf)});
     this->m_mapping.insert({"--help",new Help()});
 }
 Command * CommandFactory::getCommand(const std::string& name) {
