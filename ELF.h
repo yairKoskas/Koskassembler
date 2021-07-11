@@ -11,7 +11,7 @@
 #include <vector>
 #include <map>
 class ELF {
-public:
+ublic:
     std::string m_name;
     std::string m_path;
     ElfHeader* e_header;
