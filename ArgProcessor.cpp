@@ -3,6 +3,8 @@
 //
 
 #include "ArgProcessor.h"
+
+#include <utility>
 void ArgProcessor::executeArgs() {
     for (auto & iter : this->m_args) {
         if (this->m_cf->getCommand(iter) != nullptr) {
@@ -13,7 +15,7 @@ void ArgProcessor::executeArgs() {
     }
 }
 ArgProcessor::ArgProcessor(std::vector<std::string> args, ELF* elf) {
-    this->m_args = args;
+    this->m_args = std::move(args);
     this->m_elf = elf;
     this->m_cf = new CommandFactory(elf);
 }

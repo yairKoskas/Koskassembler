@@ -15,74 +15,44 @@ public:
 class ElfCommand : public Command {
 protected:
     ELF* m_elf;
+    explicit ElfCommand(ELF* elf) : m_elf(elf) {};
 public:
-    virtual void execute() = 0;
+    void execute() override = 0;
 };
 class Checksec : public ElfCommand {
-public:
-    Checksec(ELF* elf) {
-        this->m_elf = elf;
-    }
-    void execute() override {
-        std::cout << this->m_elf->securityCheck() << std::endl;
-    }
-};
-class InfoPlt : public ElfCommand {
-public:
-    InfoPlt(ELF* elf) {
-        this->m_elf = elf;
-    }
-    void execute() override {
-        for(auto & iter : this->m_elf->infoPLTFunctions())
-        std::cout << iter << std::endl;
-    }
-};
-class InfoHeader : public ElfCommand {
-public:
-    InfoHeader(ELF* elf) {
-        this->m_elf = elf;
-    }
-    void execute() override {
-        this->m_elf->e_header->printHeaderInfo();
-    }
-};
-class StringTableInfo : public ElfCommand {
-public:
-    StringTableInfo(ELF* elf) {
-        this->m_elf = elf;
-    }
-    void execute() override {
-        for (auto & iter : this->m_elf->string_table) {
-            if(!iter.second.empty())
-                std::cout << iter.second << std::endl;
-        }
-        std::cout << std::endl;
-    }
-};
-class SymbolTableInfo : public ElfCommand {
-    void execute() override {
-        for (auto & iter : this->m_elf->symbol_string_table) {
-            if(!iter.second.empty())
-                std::cout << iter.second << std::endl;
-        }
-        std::cout << std::endl;
-    }
+    void execute() override;
 
 public:
-    SymbolTableInfo(ELF* elf) {
-        this->m_elf = elf;
-    }
+    explicit Checksec(ELF *elf) : ElfCommand(elf) {}
+};
+class InfoPlt : public ElfCommand {
+    void execute() override;
+
+public:
+    explicit InfoPlt(ELF *elf) : ElfCommand(elf) {}
+};
+class InfoHeader : public ElfCommand {
+    void execute() override;
+
+public:
+    explicit InfoHeader(ELF *elf) : ElfCommand(elf) {}
+};
+class StringTableInfo : public ElfCommand {
+    void execute() override;
+
+public:
+    explicit StringTableInfo(ELF *elf) : ElfCommand(elf) {}
+};
+class SymbolTableInfo : public ElfCommand {
+    void execute() override;
+
+public:
+    explicit SymbolTableInfo(ELF *elf) : ElfCommand(elf) {}
 };
 class Help : public Command {
+    void execute() override;
+
 public:
-    void execute() override {
-        std::cout << "Display ELF file information:" << std::endl;
-        std::cout << "Flag Options Are: " << std::endl;
-        std::cout << "  --info-header:                       Display ELF Header Information" << std::endl;
-        std::cout << "  --info-shstrtab/--info-string-table: Display String Table Entries" << std::endl;
-        std::cout << "  --info-symtab/--info-symbol-table    Display Symbol Table Entries" << std::endl;
-        std::cout << "  --info-plt                           Display Dynamically-Resolved Functions" << std::endl;
-        std::cout << "  --checksec                           Display Security Attributes Information" << std::endl;
-    }
+    explicit Help() : Command() {}
 };
 #endif //KOSKASSEMBLER_COMMAND_H

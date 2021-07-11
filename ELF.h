@@ -21,8 +21,8 @@ public:
     std::map<uint32_t,std::string> string_table;
     std::map<uint32_t,std::string> symbol_string_table;
     SectionHeader* getSectionHeader(std::string section_name);
-    ELF(std::string path);
-    ELF(ElfHeader* e);
+    explicit ELF(const std::string& path);
+    explicit ELF(ElfHeader* e);
     std::string securityCheck();
     std::vector<std::string> infoPLTFunctions();
     bool is32Bit();

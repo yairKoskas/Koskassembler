@@ -94,7 +94,7 @@ void ElfHeader::validateHeader(){
     }
 }
 
-void ElfHeader::loadHeader(std::string path) {
+void ElfHeader::loadHeader(const std::string& path) {
     FILE* f = fopen(path.c_str(),"r");
     if (f == nullptr) {
         throw std::runtime_error("Error Opening File");
@@ -164,7 +164,8 @@ void ElfHeader::printHeaderInfo() {
     std::cout <<  "String Table Index           " << intToHex(this->e_shstrndx) << std::endl;
     std::cout << "---------------------ELF Header Info----------------------" << std::endl << std::endl;
 }
-ElfHeader::ElfHeader(std::string path) {
+ElfHeader::ElfHeader(const std::string& path) {
     this->m_path = path;
     this->loadHeader(path);
+    this->validateHeader();
 }

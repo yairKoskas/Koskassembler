@@ -53,7 +53,7 @@ std::map<uint32_t, std::string> loadStringTable(char* buf, int len) {
     } while (current_offset < len);
     return strings;
 }
-ELF::ELF(std::string path) {
+ELF::ELF(const std::string& path) {
     this->m_path = path;
     this->m_name = this->m_path.substr(this->m_path.find_last_of('/')+1,this->m_path.length() - 1);;
     this->e_header = new ElfHeader(path);
