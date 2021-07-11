@@ -6,9 +6,11 @@
 Disassembler::Disassembler(ELF *elf) {
     this->m_elf = elf;
 }
+std::string decodeOpcodex64(char* buf) {
+    return "";
+}
 std::string decodeOpcodex86(char* buf) {
-    std::string s;
-    
+    return "";
 }
 std::string disassemblex86(char* buf, int size) {
     int i;
