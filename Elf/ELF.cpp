@@ -40,7 +40,7 @@ SectionHeader* ELF::getSectionHeader(std::string section_name) {
 bool ELF::is32Bit() {
     return e_header->is32Bit();
 }
-std::map<uint32_t, std::string> loadStringTable(char* buf, int len) {
+std::map<uint32_t, std::string> loadStringTable(char* buf, uint32_t len) {
     int i;
     std::map<uint32_t,std::string> strings;
     ulong current_offset = 0;
@@ -93,6 +93,9 @@ ELF::ELF(const std::string& path) {
         this->s_headers[i]->name = this->string_table[this->s_headers[i]->sh_name];
     }
     SectionHeader* symbol_string_table_section = this->getSectionHeader(".strtab");
+    if(!symbol_string_table_section) {
+        return;
+    }
     fseek(f, (long)symbol_string_table_section->sh_offset, SEEK_SET);
     char buf2[symbol_string_table_section->sh_size];
     fread(buf2,sizeof(char),sizeof(buf2),f);

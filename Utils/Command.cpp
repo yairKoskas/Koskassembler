@@ -3,7 +3,7 @@
 //
 
 #include "Command.h"
-#include "Disassembler.h"
+#include "../Disassembler/Disassembler.h"
 void Help::execute()  {
     std::cout << "Display ELF file information:" << std::endl;
     std::cout << "Flag Options Are: " << std::endl;

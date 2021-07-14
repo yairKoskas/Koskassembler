@@ -6,7 +6,7 @@
 #define KOSKASSEMBLER_COMMAND_H
 
 #include <iostream>
-#include "ELF.h"
+#include "../Elf/ELF.h"
 
 class Command {
 public:

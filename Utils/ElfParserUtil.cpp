@@ -2,7 +2,7 @@
 // Created by yairko on 06/07/2021.
 //
 #include "ElfParserUtil.h"
-#include "ElfHeader.h"
+#include "../Elf/ElfHeader.h"
 #include <iostream>
 #include <iomanip>
 

@@ -1,8 +1,8 @@
 #include <iostream>
-#include "ELF.h"
-#include "ElfParserUtil.h"
-#include "Disassembler.h"
-#include "ArgProcessor.h"
+#include "Elf/ELF.h"
+#include "Utils/ElfParserUtil.h"
+#include "Disassembler/Disassembler.h"
+#include "Utils/ArgProcessor.h"
 int main(int argc, char* argv[]) {
     if (argc <= 2) {
        std::cout << "Usage: ./koskassembler [path-to-elf] [flags]" << std::endl;

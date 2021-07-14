@@ -3,7 +3,7 @@ project(koskassembler)
 
 set(CMAKE_CXX_STANDARD 14)
 add_definitions(-D_GLIBCXX_USE_CXX11_ABI=0)
-add_executable(koskassembler main.cpp ElfHeader.cpp ElfHeader.h ElfParserUtil.h ElfParserUtil.cpp
-               SectionHeader.cpp SectionHeader.h ELF.cpp ELF.h ProgramHeader.cpp ProgramHeader.h
-               Disassembler.cpp Disassembler.h ElfUtil.h DynamicTag.cpp DynamicTag.h Command.cpp
-               Command.h ArgProcessor.cpp ArgProcessor.h CommandFactory.cpp CommandFactory.h)
+add_executable(koskassembler main.cpp Elf/ElfHeader.cpp Elf/ElfHeader.h Utils/ElfParserUtil.h Utils/ElfParserUtil.cpp
+        Elf/SectionHeader.cpp Elf/SectionHeader.h Elf/ELF.cpp Elf/ELF.h Elf/ProgramHeader.cpp Elf/ProgramHeader.h
+        Disassembler/Disassembler.cpp Disassembler/Disassembler.h Elf/ElfUtil.h Elf/DynamicTag.cpp Elf/DynamicTag.h Utils/Command.cpp
+        Utils/Command.h Utils/ArgProcessor.cpp Utils/ArgProcessor.h Utils/CommandFactory.cpp Utils/CommandFactory.h)

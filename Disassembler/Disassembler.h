@@ -4,7 +4,7 @@
 
 #ifndef KOSKASSEMBLER_DISASSEMBLER_H
 #define KOSKASSEMBLER_DISASSEMBLER_H
-#include "ELF.h"
+#include "../Elf/ELF.h"
 
 class Disassembler {
     ELF* m_elf;

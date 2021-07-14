@@ -7,7 +7,7 @@
 #include <iomanip>
 #include <cstdio>
 #include <cstring>
-#include "ElfParserUtil.h"
+#include "../Utils/ElfParserUtil.h"
 class MagicELFException : public std::runtime_error {
 public:
     explicit MagicELFException(char const* const message="Invalid Magic bits") noexcept : std::runtime_error(message) {}
@@ -97,7 +97,8 @@ void ElfHeader::validateHeader(){
 void ElfHeader::loadHeader(const std::string& path) {
     FILE* f = fopen(path.c_str(),"r");
     if (f == nullptr) {
-        throw std::runtime_error("Error Opening File");
+        std::cout << "File doesn't exist" << std::endl;
+        exit(1);
     }
     char *buf = new char[SIZE_OF_ELF_HEADER]; // this is the biggest buffer we'll need
     if (fread(buf,sizeof(char),SIZE_OF_ELF_HEADER,f) != SIZE_OF_ELF_HEADER) {
