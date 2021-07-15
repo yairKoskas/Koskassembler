@@ -6,8 +6,6 @@ def test_elf():
     for i in range(1, 5):
         string = 'Tests/input_files/input' + str(i) + ' --info-header --info-plt --info-shstrtab ' \
                                                 '--info-symtab --checksec '
-        os.system('cmake CMakeLists.txt')
-        os.system('make')
         input_process = subprocess.Popen(['./koskassembler ' + string], stdout=subprocess.PIPE, shell=True)
         input_elf, err = input_process.communicate()
         input_elf = input_elf.decode()
