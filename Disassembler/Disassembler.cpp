@@ -21,22 +21,26 @@ Disassembler::Disassembler(ELF *elf) {
     this->byteToInstruction.insert({0x4d,"dec ebp\n"});
     this->byteToInstruction.insert({0x4e,"dec esi\n"});
     this->byteToInstruction.insert({0x4f,"dec edi\n"});
+    this->byteToInstruction.insert({0x50,"push rax\n"});
 }
-std::string Disassembler::decodeOpcodex64(char* buf) {
-    std::string s = this->byteToInstruction[buf[0]];
-    if (s[s.length()-1] == '\n') {
-       return s;
+std::pair<std::string*,int> Disassembler::decodeOpcodex64(char* buf) {
+    return {nullptr, 1};
+}
+std::pair<std::string*,int> Disassembler::decodeOpcodex86(char* buf) {
+    std::string* s = new std::string(this->byteToInstruction[buf[0]]);
+    if (((*s)[s->length()-1]) == '\n') {
+        return {s,1};
     }
-}
-std::string Disassembler::decodeOpcodex86(char* buf) {
-    return "";
+    return {s, 1};
 }
 std::string Disassembler::disassemblex86(char* buf, int size) {
     int i;
     std::string s;
     for (i = 0; i < size; ++i) {
-        s += decodeOpcodex86(buf);
-        buf += s.length();
+        std::pair<std::string*, int> result = decodeOpcodex86(buf);
+        if(!result.first->empty())
+            s += (*result.first);
+        buf += result.second;
     }
     return s;
 }
@@ -44,8 +48,8 @@ std::string Disassembler::disassemblex64(char* buf, int size) {
     int i;
     std::string s;
     for (i = 0; i < size; ++i) {
-        s += decodeOpcodex64(buf);
-        buf += s.length();
+        //s += decodeOpcodex64(buf);
+        //buf += s.length();
     }
     return s;
 }
