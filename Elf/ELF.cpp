@@ -8,6 +8,7 @@
 #include <cstring>
 #include <utility>
 #include <thread>
+#include <mutex>
 #include "ElfUtil.h"
 #define NO_RELRO 0
 #define PARTIAL_RELRO 1
@@ -54,73 +55,105 @@ std::map<uint32_t, std::string> loadStringTable(char* buf, uint32_t len) {
     } while (current_offset < len);
     return strings;
 }
-ELF::ELF(const std::string& path) : ELF(new ElfHeader(path)) {}
-ELF::ELF(ElfHeader* e) {
-    if (e == nullptr || e->is_init()) {
-        throw ElfNotInitializedException();
-    }
-    this->m_path = e->m_path;
-    this->m_name = this->m_path.substr(this->m_path.find_last_of('/')+1,this->m_path.length() - 1);;
-    this->e_header = e;
-    uint32_t offset_of_section_table = this->e_header->e_shoff;
-    FILE* f = fopen(this->m_path.c_str(),"r");
+void loadSectionHeaders(ELF* elf) {
+    uint32_t offset_of_section_table = elf->e_header->e_shoff;
+    FILE* f = fopen(elf->m_path.c_str(),"r");
     fseek(f,(int)offset_of_section_table,SEEK_SET);
-    // this->s_headers = new std::vector<SectionHeaderx86>[this->e_header->e_shnum];
     int i;
-    for (i = 0; i < this->e_header->e_shnum; ++i) {
-        if (this->is32Bit()) {
-            this->s_headers.push_back(new SectionHeader(BIT32));
+    for (i = 0; i < elf->e_header->e_shnum; ++i) {
+        if (elf->is32Bit()) {
+            elf->s_headers.push_back(new SectionHeader(BIT32));
         } else {
-            this->s_headers.push_back(new SectionHeader(BIT64));
+            elf->s_headers.push_back(new SectionHeader(BIT64));
         }
-        char buf[this->e_header->e_shentsize];
+        char buf[elf->e_header->e_shentsize];
         fread(buf,sizeof(char),sizeof(buf),f);
-        this->s_headers[i]->loadHeader(buf);
+        elf->s_headers[i]->loadHeader(buf);
     }
-    uint64_t offset_of_program_table = this->e_header->e_phoff;
+    fclose(f);
+}
+void loadProgramHeaders(ELF* elf) {
+    FILE* f = fopen(elf->m_path.c_str(),"r");
+    uint64_t offset_of_program_table = elf->e_header->e_phoff;
     fseek(f,(long)offset_of_program_table,SEEK_SET);
-    for(i = 0; i < this->e_header->e_phnum; ++i) {
-        if(this->is32Bit()) {
-            this->p_headers.push_back(new ProgramHeader(BIT32));
+    int i;
+    for(i = 0; i < elf->e_header->e_phnum; ++i) {
+        if(elf->is32Bit()) {
+            elf->p_headers.push_back(new ProgramHeader(BIT32));
         } else {
-            this->p_headers.push_back(new ProgramHeader(BIT64));
+            elf->p_headers.push_back(new ProgramHeader(BIT64));
         }
-        char buf[this->e_header->e_phentsize];
+        char buf[elf->e_header->e_phentsize];
         fread(buf,sizeof(char),sizeof(buf),f);
-        this->p_headers[i]->loadHeader(buf);
+        elf->p_headers[i]->loadHeader(buf);
     }
-    SectionHeader* section_string_table = this->s_headers[this->e_header->e_shstrndx];
+    fclose(f);
+}
+void loadElfStringTable(ELF* elf) {
+    FILE* f = fopen(elf->m_path.c_str(),"r");
+    int i;
+    SectionHeader* section_string_table = elf->s_headers[elf->e_header->e_shstrndx];
     fseek(f, (long)section_string_table->sh_offset, SEEK_SET);
     char buf[section_string_table->sh_size];
     fread(buf,sizeof(char),sizeof(buf),f);
-    this->string_table = loadStringTable(buf, (int)section_string_table->sh_size);
-    for (i = 0; i < this->e_header->e_shnum; ++i) {
-        this->s_headers[i]->name = this->string_table[this->s_headers[i]->sh_name];
+    elf->string_table = loadStringTable(buf, (int)section_string_table->sh_size);
+    for (i = 0; i < elf->e_header->e_shnum; ++i) {
+        elf->s_headers[i]->name = elf->string_table[elf->s_headers[i]->sh_name];
     }
-    SectionHeader* symbol_string_table_section = this->getSectionHeader(".strtab");
+    fclose(f);
+}
+void loadElfSymbolTable(ELF* elf) {
+    FILE* f = fopen(elf->m_path.c_str(),"r");
+    SectionHeader* symbol_string_table_section = elf->getSectionHeader(".strtab");
     fseek(f,(long)symbol_string_table_section->sh_offset, SEEK_SET);
     char buf2[symbol_string_table_section->sh_size];
     fread(buf2,sizeof(char),sizeof(buf2),f);
-    this->symbol_string_table = loadStringTable(buf2, symbol_string_table_section->sh_size);
-    SectionHeader* dynamic_section = this->getSectionHeader(".dynamic");
+    elf->symbol_string_table = loadStringTable(buf2, symbol_string_table_section->sh_size);
+    fclose(f);
+}
+void loadDynamicSection(ELF* elf) {
+    FILE* f = fopen(elf->m_path.c_str(),"r");
+    SectionHeader* dynamic_section = elf->getSectionHeader(".dynamic");
     int size;
-    if (this->is32Bit()) {
+    if (elf->is32Bit()) {
         size = 8;
     } else {
         size = 16;
     }
     fseek(f,(long)dynamic_section->sh_offset, SEEK_SET);
+    int i;
     for (i = 0; i < (int)dynamic_section->sh_size / size; ++i) {
-        if (this->is32Bit()) {
-            this->dynamic_tags.push_back(new DynamicTag(BIT32));
+        if (elf->is32Bit()) {
+            elf->dynamic_tags.push_back(new DynamicTag(BIT32));
         } else {
-            this->dynamic_tags.push_back(new DynamicTag(BIT64));
+            elf->dynamic_tags.push_back(new DynamicTag(BIT64));
         }
         char buf3[dynamic_section->sh_entsize];
         fread(buf3,sizeof(char),sizeof(buf3),f);
-        this->dynamic_tags[i]->loadTag(buf3);
+        elf->dynamic_tags[i]->loadTag(buf3);
     }
     fclose(f);
+}
+ELF::ELF(const std::string& path) : ELF(new ElfHeader(path)) {}
+
+ELF::ELF(ElfHeader* e) {
+    if (e == nullptr || !e->is_init()) {
+        throw ElfNotInitializedException();
+    }
+    this->m_path = e->m_path;
+    this->m_name = this->m_path.substr(this->m_path.find_last_of('/')+1,this->m_path.length() - 1);;
+    this->e_header = e;
+    //sections headers and string table should be joined because the other threads are using data they produce
+    std::thread load_section_headers (loadSectionHeaders, this);
+    load_section_headers.join();
+    std::thread load_string_table (loadElfStringTable, this);
+    load_string_table.join();
+    std::thread load_program_headers (loadProgramHeaders, this);
+    load_program_headers.detach();
+    std::thread load_symbol_table (loadElfSymbolTable, this);
+    load_symbol_table.detach();
+    std::thread load_dynamic_tags (loadDynamicSection, this);
+    load_dynamic_tags.detach();
 }
 
 std::string ELF::securityCheck() {
