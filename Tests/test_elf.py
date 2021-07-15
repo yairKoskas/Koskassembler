@@ -13,7 +13,7 @@ def test_elf():
             output_elf = f.read()
         input_elf = os.linesep.join([s for s in input_elf.splitlines() if s])
         output_elf = os.linesep.join([s for s in output_elf.splitlines() if s])
-        assert input_elf == output_elf
+        assert input_elf == output_elf, 'input:' + input_elf + '\noutput:' + output_elf
 
 
 test_elf()
