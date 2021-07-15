@@ -149,11 +149,11 @@ ELF::ELF(ElfHeader* e) {
     std::thread load_string_table (loadElfStringTable, this);
     load_string_table.join();
     std::thread load_program_headers (loadProgramHeaders, this);
-    load_program_headers.detach();
     std::thread load_symbol_table (loadElfSymbolTable, this);
-    load_symbol_table.detach();
     std::thread load_dynamic_tags (loadDynamicSection, this);
-    load_dynamic_tags.detach();
+    load_program_headers.join();
+    load_symbol_table.join();
+    load_dynamic_tags.join();
 }
 
 std::string ELF::securityCheck() {
