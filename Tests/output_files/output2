@@ -1,0 +1,92 @@
+
+---------------------ELF Header Info----------------------
+ELF Magic                    7f 46 4c 45
+Architecture                 64 Bit
+Endianness                   2'S Complement, Little Endian
+Version                      1
+OS/ABI                       UNIX - System V
+File Type                    Shared Object File
+Machine                      AMD x86-64
+Version                      0x1
+Entry Point                  0x1080
+Start Of Program Headers     0x40
+Start Of Section Headers     0x39c8
+Flags                        0x0
+Size Of This Header          0x40
+Size Of Program Headers      0x38
+Number Of Program Headers    0xd
+Size Of Section Headers      0x40
+Number Of Section Headers    0x1f
+String Table Index           0x1e
+---------------------ELF Header Info----------------------
+
+printf
+__libc_start_main
+__isoc99_scanf
+__cxa_finalize
+.symtab
+.strtab
+.shstrtab
+.interp
+.note.gnu.property
+.note.gnu.build-id
+.note.ABI-tag
+.gnu.hash
+.dynsym
+.dynstr
+.gnu.version
+.gnu.version_r
+.rela.dyn
+.rela.plt
+.init
+.plt.got
+.plt.sec
+.text
+.fini
+.rodata
+.eh_frame_hdr
+.eh_frame
+.init_array
+.fini_array
+.dynamic
+.data
+.bss
+.comment
+
+crtstuff.c
+deregister_tm_clones
+__do_global_dtors_aux
+completed.8060
+__do_global_dtors_aux_fini_array_entry
+frame_dummy
+__frame_dummy_init_array_entry
+main.c
+__FRAME_END__
+__init_array_end
+_DYNAMIC
+__init_array_start
+__GNU_EH_FRAME_HDR
+_GLOBAL_OFFSET_TABLE_
+__libc_csu_fini
+_ITM_deregisterTMCloneTable
+add
+_edata
+printf@@GLIBC_2.2.5
+__libc_start_main@@GLIBC_2.2.5
+__data_start
+__gmon_start__
+__dso_handle
+_IO_stdin_used
+__libc_csu_init
+__bss_start
+main
+__isoc99_scanf@@GLIBC_2.7
+__TMC_END__
+_ITM_registerTMCloneTable
+__cxa_finalize@@GLIBC_2.2.5
+
+Canary: Not Found
+NX: Enabled
+RELRO: Full
+PIE: Enabled
+
