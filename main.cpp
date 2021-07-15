@@ -1,6 +1,5 @@
 #include <iostream>
 #include "Elf/ELF.h"
-#include "Utils/ElfParserUtil.h"
 #include "Disassembler/Disassembler.h"
 #include "Utils/ArgProcessor.h"
 int main(int argc, char* argv[]) {
