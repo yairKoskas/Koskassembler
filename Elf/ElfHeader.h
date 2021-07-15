@@ -26,10 +26,6 @@
 #define EM_386 3
 #define EM_x86_64 0x3e
 #define SIZE_OF_ELF_HEADER 64
-typedef uint32_t Elf32_Addr;
-typedef uint32_t Elf32_Off;
-typedef uint64_t Elf64_Addr;
-typedef uint64_t Elf64_Off;
 class ElfHeader{
     void loadHeader(const std::string& path);
 public:

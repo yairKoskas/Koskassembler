@@ -5,8 +5,6 @@
 #include <cstdio>
 #include <iostream>
 #include <algorithm>
-#include <cstring>
-#include <utility>
 #include <thread>
 #include <mutex>
 #include "ElfUtil.h"

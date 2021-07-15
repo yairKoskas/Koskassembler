@@ -4,7 +4,7 @@
 
 #ifndef KOSKASSEMBLER_PROGRAMHEADER_H
 #define KOSKASSEMBLER_PROGRAMHEADER_H
-#include <stdint.h>
+#include <cstdint>
 #include <string>
 #include "ElfUtil.h"
 class ProgramHeader {

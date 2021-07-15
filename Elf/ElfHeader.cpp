@@ -4,7 +4,6 @@
 
 #include "ElfHeader.h"
 #include <iostream>
-#include <iomanip>
 #include <cstdio>
 #include <cstring>
 #include "../Utils/ElfParserUtil.h"

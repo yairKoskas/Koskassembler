@@ -3,9 +3,7 @@
 //
 
 #include "SectionHeader.h"
-#include "../Utils/ElfParserUtil.h"
 #include <cstring>
-#include <iostream>
 
 void SectionHeader::validateHeader() {
 
