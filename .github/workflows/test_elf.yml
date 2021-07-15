@@ -7,19 +7,14 @@ on:
     branches: [ main ]
 
 jobs:
-  Build:
+  Local-Tests:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Build CMake
       run: |
-        python Tests/build.py
-
-  Local-Tests:
-    runs-on: ubuntu-latest
-    needs: [Build]
-    steps:
-    - uses: actions/checkout@v2
+          cmake CMakeLists.txt
+          make
     - name: Test ELF
       run: |
           python Tests/test_elf.py
