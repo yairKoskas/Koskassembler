@@ -8,7 +8,7 @@ def test_elf():
                                                 '--info-symtab --checksec '
         os.system('cmake CMakeLists.txt')
         os.system('make')
-        input_process = subprocess.Popen(['../koskassembler ' + string], stdout=subprocess.PIPE, shell=True)
+        input_process = subprocess.Popen(['./koskassembler ' + string], stdout=subprocess.PIPE, shell=True)
         input_elf, err = input_process.communicate()
         input_elf = input_elf.decode()
         with open('Tests/output_files/output' + str(i), 'r') as f:
