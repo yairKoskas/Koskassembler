@@ -35,10 +35,6 @@
 #define SHF_OS_NONCONFORMING 256
 #define SHF_GROUP 512
 #define SHF_TLS 1024
-typedef uint32_t Elf32_Addr;
-typedef uint32_t Elf32_Off;
-typedef uint64_t Elf64_Addr;
-typedef uint64_t Elf64_Off;
 class SectionHeader {
     bool m_is32Bit;
 public:

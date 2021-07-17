@@ -4,10 +4,8 @@
 #include "ELF.h"
 #include <cstdio>
 #include <iostream>
-#include <algorithm>
 #include <thread>
 #include <mutex>
-#include "ElfUtil.h"
 #define NO_RELRO 0
 #define PARTIAL_RELRO 1
 #define FULL_RELRO 2
@@ -15,12 +13,6 @@
 #define PT_GNU_RELRO 0x6474e552
 #define DT_FULL_RELRO 0x8
 #define DT_PIE 0x8000001
-bool isASCII (const std::string& s)
-{
-    return !std::any_of(s.begin(), s.end(), [](char c) {
-        return static_cast<unsigned char>(c) > 127;
-    });
-}
 class ElfNotInitializedException : public std::runtime_error {
     char const* what() const noexcept override {
         return std::runtime_error::what();

@@ -18,3 +18,11 @@ jobs:
     - name: Test ELF
       run: |
           python Tests/test_elf.py
+
+    - name: Check Memory leaks
+      run: |
+        sudo apt-get install valgrind
+        cmake CMakeLists.txt
+        make
+        valgrind --log-file="log" --tool=memcheck ./koskassembler Tests/input_files/input1 --info-header --info-plt --info-shstrtab --info-symtab --checksec
+        cat log | grep 'All heap blocks were freed -- no leaks are possible'
